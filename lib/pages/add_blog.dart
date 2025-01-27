@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import '../services/cloudinaryService.dart';
 
 class AddBlogPage extends StatefulWidget {
   const AddBlogPage({super.key});
@@ -27,10 +28,11 @@ class _AddBlogPageState extends State<AddBlogPage> {
     try {
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(
-        source: ImageSource.gallery,
+        source: ImageSource.camera,
         maxWidth: 1200,
         maxHeight: 800,
         imageQuality: 85,
+        preferredCameraDevice: CameraDevice.rear, // Use rear camera for better quality blog images
       );
 
       if (image != null) {
@@ -39,9 +41,10 @@ class _AddBlogPageState extends State<AddBlogPage> {
         });
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to pick image'),
+        SnackBar(
+          content: Text('Failed to capture image: ${e.toString()}'),
           backgroundColor: Colors.red,
         ),
       );
@@ -49,48 +52,46 @@ class _AddBlogPageState extends State<AddBlogPage> {
   }
 
   Future<void> _submitBlog() async {
-    if (_formKey.currentState!.validate()) {
-      if (_selectedImage == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please select an image'),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
+    if (!_formKey.currentState!.validate()) return;
+    if (_selectedImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select an image for your blog post'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Upload image to Cloudinary first
+      final imageUrl = await CloudinaryService.uploadImage(_selectedImage!);
+      
+      if (imageUrl == null) {
+        throw 'Failed to upload image';
       }
 
-      setState(() {
-        _isLoading = true;
-      });
+      // TODO: Create blog post with imageUrl
+      print('Image uploaded successfully: $imageUrl');
+      // You can proceed with blog post creation here
 
-      try {
-        // TODO: Implement blog submission to backend
-        await Future.delayed(const Duration(seconds: 2)); // Simulate network delay
-
-        if (!mounted) return;
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Blog posted successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.pop(context);
-      } catch (e) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to post blog'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      } finally {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-        }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }

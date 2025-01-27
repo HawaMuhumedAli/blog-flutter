@@ -1,12 +1,15 @@
-import 'package:flutter/material.dart';
-import '../widgets/app_scaffold.dart';
+import 'package:blog_app/controllers/userController.dart';
 import 'package:blog_app/pages/auth/signin/loginScreen.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../widgets/app_scaffold.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final userController = Get.find<UserController>();
     // Dummy user data
     const String username = "Najiib Ahmed";
     const String email = "najiib@example.com";
@@ -81,11 +84,12 @@ class ProfilePage extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () {
+                        userController.logout();
                         // Add logout functionality
-                             Navigator.pushReplacement(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>  LoginScreen(),
+                            builder: (context) => const LoginScreen(),
                           ),
                         );
                       },

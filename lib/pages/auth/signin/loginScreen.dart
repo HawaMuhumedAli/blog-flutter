@@ -1,6 +1,7 @@
-import 'package:blog_app/pages/auth/signup/signupScreen.dart';
-import 'package:blog_app/pages/home.dart';
+import 'package:blog_app/controllers/userController.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -14,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _keepSignedIn = false;
   final _formKey = GlobalKey<FormState>();
   String? _passwordError;
+  UserController userController = UserController();
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
-                    // controller: userController.emailController,
+                    controller: userController.emailController,
                     decoration: InputDecoration(
                       // hintText: 'Rhebhek@gmail.com',
                       filled: true,
@@ -79,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   const SizedBox(height: 8),
                   TextFormField(
-                    // controller: userController.passwordController,
+                    controller: userController.passwordController,
                     obscureText: !_isPasswordVisible,
                     decoration: InputDecoration(
                       // hintText: '••••••••',
@@ -153,28 +155,32 @@ class _LoginScreenState extends State<LoginScreen> {
                   // ),
                   // const SizedBox(height: 24),
                   // Login Button
-
+                  Obx(
+                    () => 
                   SizedBox(
                     width: double.infinity,
                     height: 48,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // if (_formKey.currentState!.validate()) {
-                        //   // Handle login logic here
-                        // }
-                        // userController.login();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
-                        );
+                      child: ElevatedButton(
+                        onPressed: userController.loading.value
+                            ? null
+                            : () {
+                                // if (_formKey.currentState!.validate()) {
+                                //   // Handle login logic here
+                                // }
+                                userController.login();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.cyan, // Orange color
+                        backgroundColor:
+                             Colors.cyan, // Orange color
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: const Text(
+                        child: userController.loading.value
+                            ? CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : const Text(
                         'Login',
                         style: TextStyle(
                           fontSize: 16,
@@ -182,8 +188,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+                    ),
                   ),
-
                   const SizedBox(height: 16),
                   // Sign up link
                   Row(
@@ -196,11 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextButton(
                         onPressed: () {
                           // Handle navigation to sign up screen
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SignupScreen()),
-                          );
+                          Navigator.pushReplacementNamed(context, '/signup');
                         },
                         child: const Text(
                           'Sign up here',
