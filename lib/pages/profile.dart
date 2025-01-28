@@ -11,8 +11,8 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final userController = Get.find<UserController>();
     // Dummy user data
-    const String username = "Najiib Ahmed";
-    const String email = "najiib@example.com";
+    const String username = "fardowsa";
+    const String email = "fardowsa@example.com";
     final String initial =
         username.isNotEmpty ? username[0].toUpperCase() : "?";
 
@@ -236,7 +236,7 @@ final List<UserBlog> dummyUserBlogs = [
     date: 'Jan 26, 2024',
     imageUrl: 'https://picsum.photos/seed/1/800/400',
   ),
-  UserBlog(
+    UserBlog(
     title: 'Design systems that people want to use',
     date: 'Jan 25, 2024',
     imageUrl: 'https://picsum.photos/seed/2/800/400',
