@@ -12,7 +12,7 @@ class ProfilePage extends StatelessWidget {
     final userController = Get.find<UserController>();
     // Dummy user data
     const String username = "xawa";
-    const String email = "xawa luul@gmail.com";
+    const String email = "xawaluul@gmail.com";
     final String initial =
         username.isNotEmpty ? username[0].toUpperCase() : "?";
 
