@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/app_scaffold.dart';
-
+// added bookmarks
 class BookmarksPage extends StatelessWidget {
   const BookmarksPage({super.key});
 
