@@ -6,6 +6,7 @@ import 'package:mime/mime.dart';
 //
 ////////
 class CloudinaryService {
+    // Cloudinary credentials
   static const String _cloudName = 'dvgapjlqg';
   static const String _uploadPreset =
       'crowdfunding'; // Make sure this is unsigned in Cloudinary
