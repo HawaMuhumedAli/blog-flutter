@@ -1,4 +1,3 @@
-
 import 'package:blog_app/controllers/userController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,9 +10,14 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  // Variables to manage password visibility
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
+
+  // Form key to validate input fields
   final _formKey = GlobalKey<FormState>();
+
+  // UserController instance to manage user-related actions
   final UserController userController = Get.put(UserController());
 
   @override
@@ -21,20 +25,20 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        // Added Center widget heres
+        // Centering the scrollable content
         child: SingleChildScrollView(
           child: Container(
             constraints: BoxConstraints(
-              maxWidth: 400, // Maximum width of the form
+              maxWidth: 400, // Setting max width for the form
             ),
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Form(
               key: _formKey,
               child: Column(
-                mainAxisAlignment:
-                    MainAxisAlignment.center, // Center content vertically
+                mainAxisAlignment: MainAxisAlignment.center, // Centering the content vertically
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  // Signup title
                   const Text(
                     'Signup',
                     style: TextStyle(
@@ -44,6 +48,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   const SizedBox(height: 30),
+
+                  // Full Name Field
                   TextFormField(
                     controller: userController.nameController,
                     decoration: InputDecoration(
@@ -61,6 +67,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
+
+                  // Email Field
                   TextFormField(
                     controller: userController.emailController,
                     decoration: InputDecoration(
@@ -78,6 +86,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
+
+                  // Password Field
                   TextFormField(
                     controller: userController.passwordController,
                     obscureText: !_isPasswordVisible,
@@ -95,9 +105,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _isPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
+                          _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                           color: Colors.grey,
                         ),
                         onPressed: () {
@@ -109,6 +117,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
+
+                  // Confirm Password Field
                   TextFormField(
                     controller: userController.confermPasswordController,
                     obscureText: !_isConfirmPasswordVisible,
@@ -126,57 +136,51 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _isConfirmPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
+                          _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
                           color: Colors.grey,
                         ),
                         onPressed: () {
                           setState(() {
-                            _isConfirmPasswordVisible =
-                                !_isConfirmPasswordVisible;
+                            _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
                           });
                         },
                       ),
                     ),
                   ),
                   const SizedBox(height: 24),
+
+                  // Signup Button with Loading State
                   Obx(
-                    () => 
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
+                    () => SizedBox(
+                      width: double.infinity,
+                      height: 48,
                       child: ElevatedButton(
                         onPressed: userController.loading.value
                             ? null
                             : () {
-                                // if (_formKey.currentState!.validate()) {
-                                //   // Handle login logic here
-                                // }
-                        userController.registerUser();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                             Colors.cyan, // Orange color
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                                userController.registerUser();
+                              },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.cyan,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
-                      ),
                         child: userController.loading.value
-                            ? CircularProgressIndicator(
-                                color: Colors.white,
-                              )
+                            ? CircularProgressIndicator(color: Colors.white)
                             : const Text(
-                        'Signup',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
+                                'Signup',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
                       ),
-                    ),
                     ),
                   ),
                   const SizedBox(height: 16),
+
+                  // Navigate to Sign-in Page
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -186,12 +190,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // Handle navigation to sign in screen
                           Navigator.pushReplacementNamed(context, '/signin');
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => LoginScreen()));
                         },
                         child: const Text(
                           'Sign in here',
