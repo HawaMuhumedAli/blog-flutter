@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../widgets/app_scaffold.dart';
 
+// Profile Page widget
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -13,12 +14,14 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  // Controllers for user and blog data
   final userController = Get.find<UserController>();
   final blogController = Get.find<BlogController>();
 
   @override
   void initState() {
     super.initState();
+    // Fetch user's profile data when the page is initialized
     userController.getUsersProfile().catchError((error) {
       // Handle token expiration or unauthorized access
     });
@@ -27,10 +30,12 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
+      // Show loading indicator while user data is being fetched
       if (userController.loading.value) {
         return const Center(child: CircularProgressIndicator());
       }
 
+      // Handle case where no user data is available (possibly expired token)
       if (userController.user.isEmpty) {
         return Scaffold(
           body: Center(
@@ -43,6 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
+                // Button to log out and redirect to login screen
                 ElevatedButton(
                   onPressed: () {
                     userController.logout();
@@ -56,8 +62,9 @@ class _ProfilePageState extends State<ProfilePage> {
         );
       }
 
+      // User data is available, proceed to show profile page
       return AppScaffold(
-        initialIndex: 3,
+        initialIndex: 3, // Set initial selected index for the navigation bar
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: const Text('Profile'),
@@ -68,6 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
+              // User profile section
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -82,7 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 child: Column(
                   children: [
-                    // Profile Avatar
+                    // Profile Avatar (Initial of the user's name)
                     Container(
                       width: 100,
                       height: 100,
@@ -102,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // Username
+                    // User's name
                     Text(
                       userController.user['name'],
                       style: const TextStyle(
@@ -111,7 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    // Email
+                    // User's email
                     Text(
                       userController.user['email'],
                       style: TextStyle(
@@ -120,7 +128,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    // Logout Button
+                    // Log out button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
@@ -144,7 +152,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               const SizedBox(height: 24),
-              // My Blogs Section
+              // "My Blogs" section
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
@@ -160,7 +168,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 16),
                     // Blog List
                     ListView.builder(
-                      shrinkWrap: true,
+                      shrinkWrap: true, // Prevent scrolling in the list view
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: userController.posts.length,
                       itemBuilder: (context, index) {
@@ -180,6 +188,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           child: ListTile(
                             contentPadding: const EdgeInsets.all(16),
+                            // Blog image
                             leading: ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: Image.network(
@@ -196,7 +205,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             subtitle: Text(
-                              blog['createdAt'].split("T")[0],
+                              blog['createdAt'].split("T")[0], // Format date
                               style: TextStyle(
                                 color: Colors.grey[600],
                               ),
