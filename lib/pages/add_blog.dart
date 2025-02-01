@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../services/cloudinaryService.dart';
-///
+
+/// Screen for adding a new blog post
 class AddBlogPage extends StatefulWidget {
   const AddBlogPage({super.key});
 
@@ -13,14 +14,13 @@ class AddBlogPage extends StatefulWidget {
 }
 
 class _AddBlogPageState extends State<AddBlogPage> {
-  final _formKey = GlobalKey<FormState>();
-  File? _selectedImage;
+  final _formKey = GlobalKey<FormState>(); // Form key for validation
+  File? _selectedImage; // Variable to store the selected image
 
-  bool _isLoading = false;
-  final blogController = Get.put(BlogController());
+  bool _isLoading = false; // Loading state
+  final blogController = Get.put(BlogController()); // Blog controller instance
 
-
-
+  /// Function to pick an image from the camera
   Future<void> _pickImage() async {
     try {
       final ImagePicker picker = ImagePicker();
@@ -30,7 +30,7 @@ class _AddBlogPageState extends State<AddBlogPage> {
         maxHeight: 800,
         imageQuality: 85,
         preferredCameraDevice:
-            CameraDevice.rear, // Use rear camera for better quality blog images
+            CameraDevice.rear, // Use rear camera for better quality
       );
 
       if (image != null) {
@@ -49,8 +49,9 @@ class _AddBlogPageState extends State<AddBlogPage> {
     }
   }
 
+  /// Function to submit the blog post
   Future<void> _submitBlog() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) return; // Validate form
     if (_selectedImage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -61,20 +62,19 @@ class _AddBlogPageState extends State<AddBlogPage> {
       return;
     }
 
-    blogController.loading.value = true;
+    blogController.loading.value = true; // Show loading state
 
     try {
-      // Upload image to Cloudinary first
+      // Upload image to Cloudinary
       final imageUrl = await CloudinaryService.uploadImage(_selectedImage!);
 
       if (imageUrl == null) {
         throw 'Failed to upload image';
       }
-      // TODO: Create blog post with imageUrl
+      
       print('Image uploaded successfully: $imageUrl');
       blogController.imageUrl.value = imageUrl;
-      blogController.addBlogPost();
-      // You can proceed with blog post creation here
+      blogController.addBlogPost(); // Add blog post with uploaded image
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -92,7 +92,7 @@ class _AddBlogPageState extends State<AddBlogPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Create Blog'),
+          title: const Text('Create Blog'), // Page title
           elevation: 0,
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
@@ -108,7 +108,7 @@ class _AddBlogPageState extends State<AddBlogPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Image Selection
+                        // Image Selection Widget
                         GestureDetector(
                           onTap: _pickImage,
                           child: Container(
@@ -149,7 +149,7 @@ class _AddBlogPageState extends State<AddBlogPage> {
                         ),
                         const SizedBox(height: 24),
 
-                        // Title Field
+                        // Title Input Field
                         TextFormField(
                           controller: blogController.titleController,
                           decoration: InputDecoration(
@@ -170,7 +170,7 @@ class _AddBlogPageState extends State<AddBlogPage> {
                         ),
                         const SizedBox(height: 24),
 
-                        // Body Field
+                        // Blog Content Input Field
                         TextFormField(
                           controller: blogController.bodyController,
                           decoration: InputDecoration(
