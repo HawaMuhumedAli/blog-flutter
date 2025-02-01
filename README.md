@@ -8,6 +8,8 @@
 🖊️ Create, edit, and delete blog posts
 
 📩 Real-time notifications for new posts & comments
+- ![API Architecture](https://github.com/HawaMuhumedAli/blog-flutter/blob/1cc4392cc4ad29c90e986ebfb32bbb1d493cee79/Screenshot%202025-02-01%20083754.png
+)
 
 🔍 Search and filter blog posts
 
