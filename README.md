@@ -37,6 +37,6 @@
 Frontend: Flutter (Dart)
 State Management: GetX
 Backend:Node.js
-Database: Firestore / MongoDB
+Database: MongoDB
 Authentication: Firebase Auth / OAuth
 Version Control:  GitHub
