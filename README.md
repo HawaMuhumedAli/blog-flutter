@@ -16,18 +16,27 @@
 ✅ UI/UX Design:
 
 🎨 Modern, clean, and fully responsive UI
+
 🌙 Light/Dark mode support
+
 🔄 Smooth animations and transitions
+
 ✅ State Management (GetX):
 
 ⚡ Efficient state handling for performance
+
 📍 Navigation management using GetX
+
 🔄 Reactive UI updates
+
 ✅ Innovation:
 
 ✨ AI-powered blog recommendations
+
 📊 User analytics dashboard
+
 🎤 Voice-to-text blog creation
+
 ✅ Collaboration & Code Quality:
 - ![API Architecture](https://github.com/HawaMuhumedAli/blog-flutter/blob/a847cbb1c218f715a6ff1071b759c9946bf83f2c/Screenshot%202025-02-01%20083242.png
 )
