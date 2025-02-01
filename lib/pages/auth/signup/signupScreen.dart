@@ -21,7 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        // Added Center widget here
+        // Added Center widget heres
         child: SingleChildScrollView(
           child: Container(
             constraints: BoxConstraints(
