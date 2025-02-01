@@ -58,6 +58,7 @@ class User {
     );
   }
 
+  ///
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
@@ -65,3 +66,5 @@ class User {
     };
   }
 }
+////////
+//////
