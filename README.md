@@ -39,9 +39,15 @@
 
 
 🚀 Tech Stack
+
 Frontend: Flutter (Dart)
+
 State Management: GetX
+
 Backend:Node.js
+
 Database: MongoDB
+
 Authentication: Firebase Auth / OAuth
+
 Version Control:  GitHub
