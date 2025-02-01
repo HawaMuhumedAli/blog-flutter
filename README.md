@@ -34,7 +34,9 @@
 
 
 🔄 Git & GitHub for version control
+
 📂 Organized folder structure
+
 📑 Well-documented code with comment
 
 
