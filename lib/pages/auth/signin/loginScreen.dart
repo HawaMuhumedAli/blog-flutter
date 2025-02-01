@@ -11,11 +11,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool _isPasswordVisible = false;
-  bool _keepSignedIn = false;
-  final _formKey = GlobalKey<FormState>();
-  String? _passwordError;
-  UserController userController = UserController();
+  bool _isPasswordVisible = false; // Controls password visibility
+  bool _keepSignedIn = false; // Checkbox state for keeping user signed in
+  final _formKey = GlobalKey<FormState>(); // Key for form validation
+  String? _passwordError; // Error message for password field
+  UserController userController = UserController(); // Controller instance for user operations
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +25,16 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SingleChildScrollView(
           child: Container(
             constraints: const BoxConstraints(
-              maxWidth: 400,
+              maxWidth: 400, // Restricts max width for responsiveness
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0), // Adds horizontal padding
             child: Form(
-              key: _formKey,
+              key: _formKey, // Assigns form key for validation
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Login Title
                   const Text(
                     'Login',
                     style: TextStyle(
@@ -43,8 +44,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  // Email Field
-                  //enter email
+
+                  // Email Field Label
                   const Text(
                     'Email Address',
                     style: TextStyle(
@@ -53,10 +54,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
+
+                  // Email Input Field
                   TextFormField(
                     controller: userController.emailController,
                     decoration: InputDecoration(
-                      // hintText: 'Rhebhek@gmail.com',
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
@@ -70,8 +72,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Password Field
 
+                  // Password Field Label
                   const Text(
                     'Password',
                     style: TextStyle(
@@ -79,13 +81,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: Colors.black87,
                     ),
                   ),
-
                   const SizedBox(height: 8),
+
+                  // Password Input Field
                   TextFormField(
                     controller: userController.passwordController,
-                    obscureText: !_isPasswordVisible,
+                    obscureText: !_isPasswordVisible, // Toggles password visibility
                     decoration: InputDecoration(
-                      // hintText: '••••••••',
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
@@ -96,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(8),
                         borderSide: const BorderSide(color: Colors.grey),
                       ),
-                      errorText: _passwordError,
+                      errorText: _passwordError, // Displays password error if any
                       errorStyle: const TextStyle(
                         color: Colors.red,
                       ),
@@ -109,15 +111,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         onPressed: () {
                           setState(() {
-                            _isPasswordVisible = !_isPasswordVisible;
+                            _isPasswordVisible = !_isPasswordVisible; // Toggles password visibility
                           });
                         },
                       ),
                     ),
                   ),
+
+                 // Forgot Password Button
                   TextButton(
                     onPressed: () {
-                      // Handle forgot password
+                      // Handle forgot password functionality
                     },
                     child: Container(
                       width: double.infinity,
@@ -156,43 +160,40 @@ class _LoginScreenState extends State<LoginScreen> {
                   // ),
                   // const SizedBox(height: 24),
                   // Login Button
+                  // Login Button with Loading Indicator
                   Obx(
-                    () => 
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
+                    () => SizedBox(
+                      width: double.infinity,
+                      height: 48,
                       child: ElevatedButton(
                         onPressed: userController.loading.value
-                            ? null
+                            ? null // Disables button while loading
                             : () {
-                                // if (_formKey.currentState!.validate()) {
-                                //   // Handle login logic here
-                                // }
-                                userController.login();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                             Colors.cyan, // Orange color
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                                userController.login(); // Calls login function
+                              },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.cyan, // Button color
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
-                      ),
                         child: userController.loading.value
                             ? CircularProgressIndicator(
                                 color: Colors.white,
-                              )
+                              ) // Shows loader while processing
                             : const Text(
-                        'Login',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
+                                'Login',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
                       ),
-                    ),
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Sign up link
+
+                  // Sign up Link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -202,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // Handle navigation to sign up screen
+                          // Navigates to sign up screen
                           Navigator.pushReplacementNamed(context, '/signup');
                         },
                         child: const Text(
