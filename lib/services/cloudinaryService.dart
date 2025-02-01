@@ -3,10 +3,14 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart';
 
+//
+////////
 class CloudinaryService {
   static const String _cloudName = 'dvgapjlqg';
-  static const String _uploadPreset = 'crowdfunding'; // Make sure this is unsigned in Cloudinary
-  static const String _uploadUrl = 'https://api.cloudinary.com/v1_1/$_cloudName/image/upload';
+  static const String _uploadPreset =
+      'crowdfunding'; // Make sure this is unsigned in Cloudinary
+  static const String _uploadUrl =
+      'https://api.cloudinary.com/v1_1/$_cloudName/image/upload';
 
   static Future<String?> uploadImage(File imageFile) async {
     try {
@@ -38,4 +42,4 @@ class CloudinaryService {
       return null;
     }
   }
-}
+}//////
