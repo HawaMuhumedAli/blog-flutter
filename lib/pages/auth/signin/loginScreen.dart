@@ -44,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 30),
                   // Email Field
+                  //enter email
                   const Text(
                     'Email Address',
                     style: TextStyle(
