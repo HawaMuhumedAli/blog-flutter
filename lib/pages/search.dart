@@ -9,6 +9,8 @@ class SearchPage extends StatelessWidget {
     return AppScaffold(
       initialIndex: 3,
       appBar: AppBar(
+        automaticallyImplyLeading: false, // This removes back arrow
+
         title: const Text('Search'),
         elevation: 0,
         backgroundColor: Colors.white,

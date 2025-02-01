@@ -1,8 +1,26 @@
+import 'package:blog_app/controllers/blogController.dart';
+import 'package:blog_app/models/blog.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../widgets/app_scaffold.dart';
+import 'package:timeago/timeago.dart' as timeago;
+////////
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class Home extends StatefulWidget {
+  const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  final blogController = Get.put(BlogController());
+
+  @override
+  void initState() {
+    super.initState();
+    blogController.getBlogPost();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,92 +30,67 @@ class HomePage extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
+        automaticallyImplyLeading: false, // This removes back arrow
+
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: dummyBlogs.length,
-        itemBuilder: (context, index) {
-          final blog = dummyBlogs[index];
-          return BlogItem(
-            date: blog.date,
-            title: blog.title,
-            imageUrl: blog.imageUrl,
-            isBookmarked: blog.isBookmarked,
-          );
-        },
-      ),
+      body: Obx(() {
+        if (blogController.loading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (blogController.data.isEmpty) {
+          return const Center(child: Text('No blogs found'));
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: blogController.data.length,
+          itemBuilder: (context, index) {
+            final blog = blogController.data[index];
+            return BlogItem(
+              blog: blog,
+              onTap: () => Get.to(() => BlogDetailsPage(blog: blog)),
+            );
+          },
+        );
+      }),
     );
   }
 }
 
-class BlogItem extends StatefulWidget {
-  final String date;
-  final String title;
-  final String imageUrl;
-  final bool isBookmarked;
+class BlogItem extends StatelessWidget {
+  final Blog blog;
+  final VoidCallback onTap;
 
   const BlogItem({
-    super.key,
-    required this.date,
-    required this.title,
-    required this.imageUrl,
-    required this.isBookmarked,
-  });
-
-  @override
-  State<BlogItem> createState() => _BlogItemState();
-}
-
-class _BlogItemState extends State<BlogItem> {
-  late bool _isBookmarked;
-
-  @override
-  void initState() {
-    super.initState();
-    _isBookmarked = widget.isBookmarked;
-  }
+    Key? key,
+    required this.blog,
+    required this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BlogDetailsPage(
-              title: widget.title,
-              imageUrl: widget.imageUrl,
-              date: widget.date,
-            ),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 2,
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
+    final blogController = Get.find<BlogController>();
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: InkWell(
+        onTap: onTap,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-              child: Image.network(
-                widget.imageUrl,
+            if (blog.image.isNotEmpty)
+              Image.network(
+                blog.image,
                 height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  height: 200,
+                  color: Colors.grey[300],
+                  child: const Icon(Icons.error),
+                ),
               ),
-            ),
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -106,35 +99,36 @@ class _BlogItemState extends State<BlogItem> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        widget.date,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 14,
+                      Expanded(
+                        child: Text(
+                          blog.title,
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
                       ),
-                      IconButton(
+                      Obx(() => IconButton(
                         icon: Icon(
-                          _isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                          color: _isBookmarked ? Colors.blue : Colors.grey,
+                              blogController.isBookmarked(blog)
+                                  ? Icons.bookmark
+                                  : Icons.bookmark_border,
+                              color: blogController.isBookmarked(blog)
+                                  ? Colors.blue
+                                  : Colors.grey,
                         ),
-                        onPressed: () {
-                          setState(() {
-                            _isBookmarked = !_isBookmarked;
-                          });
-                        },
-                      ),
+                            onPressed: () =>
+                                blogController.toggleBookmark(blog),
+                          )),
                     ],
                   ),
+
                   const SizedBox(height: 8),
                   Text(
-                    widget.title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                    'Posted by ${blog.user.email}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    timeago.format(DateTime.parse(blog.createdAt)),
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),
@@ -147,21 +141,15 @@ class _BlogItemState extends State<BlogItem> {
 }
 
 class BlogDetailsPage extends StatelessWidget {
-  final String title;
-  final String imageUrl;
-  final String date;
+  final Blog blog;
 
-  const BlogDetailsPage({
-    super.key,
-    required this.title,
-    required this.imageUrl,
-    required this.date,
-  });
+  const BlogDetailsPage({Key? key, required this.blog}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(blog.title),
         elevation: 0,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
@@ -170,40 +158,44 @@ class BlogDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(
-              imageUrl,
-              height: 300,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
+            if (blog.image.isNotEmpty)
+              Image.network(
+                blog.image,
+                height: 300,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  height: 300,
+                  color: Colors.grey[300],
+                  child: const Icon(Icons.error),
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    date,
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14,
-                    ),
+                    blog.title,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: [
+                      const Icon(Icons.person, size: 16),
+                      const SizedBox(width: 4),
+                      Text(blog.user.email),
+                      const Spacer(),
+                      Text(
+                        timeago.format(DateTime.parse(blog.createdAt)),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-                    style: TextStyle(
-                      color: Colors.grey[800],
-                      fontSize: 16,
-                      height: 1.5,
-                    ),
+                    blog.story,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ],
               ),
@@ -214,37 +206,3 @@ class BlogDetailsPage extends StatelessWidget {
     );
   }
 }
-
-// Dummy data model
-class Blog {
-  final String date;
-  final String title;
-  final String imageUrl;
-  final bool isBookmarked;
-
-  const Blog({
-    required this.date,
-    required this.title,
-    required this.imageUrl,
-    this.isBookmarked = false,
-  });
-}
-
-// Dummy data
-final List<Blog> dummyBlogs = [
-  Blog(
-    date: 'Jan 26',
-    title: 'How to become master in colour palette?',
-    imageUrl: 'https://picsum.photos/seed/1/800/400',
-  ),
-  Blog(
-    date: 'Jan 25',
-    title: 'Design systems that people want to use',
-    imageUrl: 'https://picsum.photos/seed/2/800/400',
-  ),
-  Blog(
-    date: 'Jan 24',
-    title: 'The future of UX/UI design in 2024',
-    imageUrl: 'https://picsum.photos/seed/3/800/400',
-  ),
-];

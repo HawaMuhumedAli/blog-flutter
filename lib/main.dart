@@ -1,17 +1,16 @@
-
 import 'package:blog_app/controllers/userController.dart';
 import 'package:blog_app/middleware/auth_middleware.dart';
 import 'package:blog_app/pages/add_blog.dart';
 import 'package:blog_app/pages/auth/signin/loginScreen.dart';
 import 'package:blog_app/pages/auth/signup/signupScreen.dart';
-import 'package:blog_app/pages/bookmarks.dart';
+import 'package:blog_app/pages/bookmarks_page.dart';
 import 'package:blog_app/pages/home.dart';
 import 'package:blog_app/pages/profile.dart';
 import 'package:blog_app/pages/search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
+///
 void main() async {
   await GetStorage.init();
   Get.put(UserController());
@@ -37,48 +36,44 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.grey[100],
       ),
+      defaultTransition: Transition.noTransition,
       initialRoute: _getInitialRoute(),
       getPages: [
         GetPage(
           name: '/signup',
-          page: () =>  SignupScreen(),
+          page: () => SignupScreen(),
           middlewares: [AuthMiddleware()],
         ),
         GetPage(
           name: '/signin',
-          page: () =>  LoginScreen(),
+          page: () => LoginScreen(),
           middlewares: [AuthMiddleware()],
         ),
         GetPage(
           name: '/',
-          page: () =>  HomePage(),
+          page: () => Home(),
           middlewares: [AuthMiddleware()],
+          preventDuplicates: true,
         ),
         GetPage(
           name: '/bookmarks',
-          page: () =>  BookmarksPage(),
+          page: () => BookmarksPage(),
           middlewares: [AuthMiddleware()],
+          preventDuplicates: true,
         ),
         GetPage(
           name: '/profile',
           page: () => ProfilePage(),
           middlewares: [AuthMiddleware()],
-        ),
- 
-        GetPage(
-          name: '/search',
-          page: () => SearchPage(),
-          middlewares: [AuthMiddleware()],
+          preventDuplicates: true,
         ),
         GetPage(
-          name: '/add-blog',
+          name: '/addBlog',
           page: () => AddBlogPage(),
           middlewares: [AuthMiddleware()],
+          preventDuplicates: true,
         ),
       ],
     );
   }
 }
-
-
- 

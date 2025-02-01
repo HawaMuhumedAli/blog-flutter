@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:convert';
 
@@ -10,14 +9,17 @@ import 'package:http/http.dart' as http;
 class UserController extends GetxController {
   final tokenService = TokenService();
   var loading = false.obs;
+  // final String baseUrl = 'http://localhost:5000';
+  // final String baseUrl = 'https://blog-api-8kzp.vercel.app';
   final String baseUrl = 'http://10.0.2.2:5000';
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confermPasswordController = TextEditingController();
   final nameController = TextEditingController();
   var Token = ''.obs;
   final user = {}.obs;
-
+  final posts = [].obs;
 
   @override
   void onInit() {
@@ -26,10 +28,7 @@ class UserController extends GetxController {
     initializeToken();
 
     // Listen for changes in lastTransactionStatus
-    }
-
-
-
+  }
 
   Future<void> initializeToken() async {
     String? storedToken = await tokenService.getToken();
@@ -145,7 +144,7 @@ class UserController extends GetxController {
       loading.value = true;
       print(Token.value);
       final response = await http.get(
-        Uri.parse(baseUrl + '/api/users/profile'),
+        Uri.parse(baseUrl + '/api/posts/my'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${Token.value}',
@@ -153,7 +152,8 @@ class UserController extends GetxController {
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        user.value = data["user"];  
+        user.value = data["user"];
+        posts.value = data["posts"];
       } else {
         print(response.statusCode);
         Get.snackbar(
@@ -175,5 +175,4 @@ class UserController extends GetxController {
       loading.value = false;
     }
   }
-
 }
