@@ -2,6 +2,8 @@
 
 ✅ Core Features:
 🖊️ Create, edit, and delete blog posts
+- ![API Architecture](https://github.com/HawaMuhumedAli/blog-flutter/blob/3a3c256578fb1c3396feec6de5293af45d00989e/Screenshot%202025-02-01%20080429.png
+)
 👥 User authentication (login, signup, logout)
 📩 Real-time notifications for new posts & comments
 🔍 Search and filter blog posts
