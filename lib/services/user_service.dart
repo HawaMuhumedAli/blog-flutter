@@ -164,7 +164,7 @@ Future<bool> logout() async {
   return await pref.remove('token');
 }
 
-// Get base64 encoded image
+/// Get base64 encoded image
 String? getStringImage(File? file) {
   if (file == null) return null ;
   return base64Encode(file.readAsBytesSync());
