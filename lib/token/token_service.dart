@@ -12,7 +12,7 @@ class TokenService {
 
   TokenService._internal();
 
-  // Get token
+  /// Get token
   String? getToken() {
     return storage.read(_tokenKey);
   }
